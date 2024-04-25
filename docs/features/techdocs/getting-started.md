@@ -178,7 +178,7 @@ learn more about how preparers, generators and publishers work.
 The final step is to import the techdocs backend plugin in Backstage app
 backend. Add the following to your `packages/backend/src/index.ts`:
 
-```typescript
+```typescript title="packages/backend/src/index.ts"
 import techdocs from './plugins/techdocs';
 
 // .... main should already be present.
@@ -198,7 +198,7 @@ app. Now let us tweak some configurations to suit your needs.
 
 To install TechDocs when using the New Backend system you will need to do the following.
 
-Navigate to `packages/backend` of your Backstage app, and install the `@backstage/plugin-techdocs-backend` package.
+From your Backstage root directory install the `@backstage/plugin-techdocs-backend` package with yarn, using `packages/backend` as your working directory.
 
 ```bash
 # From your Backstage root directory
@@ -219,21 +219,23 @@ backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
 backend.start();
 ```
 
-> Note: The above is a very simplified example, you may have more content then this in your version.
+> Note: The above is a simplified example, you may have more content than this in your version.
 
 ## Setting the configuration
 
 **See [TechDocs Configuration Options](configuration.md) for complete
 configuration reference.**
 
-### Should TechDocs Backend generate docs?
+### Should the Backstage TechDocs Backend generate the documentation?
 
-```yaml
+If you set the TechDocs Builder to `local` in the configuration file (as seen in the code snippet below), then your docs will be built by the Backstage backend itself.
+
+```yaml title="app-config.yaml"
 techdocs:
   builder: 'local'
 ```
 
-Note that we recommend generating docs on CI/CD instead. Read more in the
+Building the documentation locally in the backend is not what we recommend. Instead docs should be generated in CI/CD. Read more in the
 "Basic" and "Recommended" sections of the
 [TechDocs Architecture](architecture.md). But if you want to get started quickly
 set `techdocs.builder` to `'local'` so that TechDocs Backend is responsible for
@@ -299,11 +301,14 @@ You can do so by including the following lines right above `USER node` of your
 ```Dockerfile
 RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
+
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN pip3 install mkdocs-techdocs-core
+...
+USER node
 ```
 
 Please be aware that the version requirement could change, you need to check our
@@ -316,13 +321,31 @@ the OS package manager or within a virtual environment (see the
 [pipx](https://pypa.github.io/pipx/) for installing Python packages in an isolated
 environment.
 
-The above Dockerfile snippet installs the latest `mkdocs-techdoc-core` package.
+```Dockerfile title="Dockerfile"
+# pipx installation
+
+# Add the pipx installation to the additional packages installed with apt
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends pipx
+
+USER node
+
+# Installs mkdocs-techdocs-core as the node user
+RUN pipx install --include-deps mkdocs-techdocs-core
+
+# Ensures that pipx default installation location is included in the PATH variable
+ENV PATH=/home/node/.local/bin:$PATH
+```
+
+The above Dockerfile snippets installs the latest `mkdocs-techdoc-core` package.
 Version numbers can be found in the corresponding
 [changelog](https://github.com/backstage/mkdocs-techdocs-core#changelog). In
 case you want to pin the version, use the example below:
 
 ```Dockerfile
 RUN pip3 install mkdocs-techdocs-core==1.2.3
+# or
+RUN pipx install mkdocs-techdocs-core==1.2.3
 ```
 
 Note: We recommend Python version 3.11 or higher.
