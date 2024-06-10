@@ -9332,12 +9332,12 @@ __metadata:
   linkType: hard
 
 "@grpc/grpc-js@npm:~1.9.6":
-  version: 1.9.11
-  resolution: "@grpc/grpc-js@npm:1.9.11"
+  version: 1.9.15
+  resolution: "@grpc/grpc-js@npm:1.9.15"
   dependencies:
     "@grpc/proto-loader": ^0.7.8
     "@types/node": ">=12.12.47"
-  checksum: ed11ebcb0f8c34e2ada1d16ac2eef2465e1812871dd42bf40a405dfa06e2bfe895e680aff10644f9d51c33ce1ee1882ee466237ee478365c5ed265c0d7c5c015
+  checksum: 5b0f84052ad6610fff7919cae99c79c1182b01d2f529f6e64e1189e902a90abcb6f828a119df8e4abcdab8fa1ac5d5975fe200220293a1ced126c536f3bc1374
   languageName: node
   linkType: hard
 
